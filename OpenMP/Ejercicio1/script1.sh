@@ -6,7 +6,7 @@
 for (( j=800; j <= 1600; j=j+200 ))
 do
 
-    pmatmat_original $j >> tiempoOriginal.txt
+    ./pmatmat_original $j >> tiempoOriginal.txt
 
 	for (( i=2; i <= 4; i=i+1 ))
 	do

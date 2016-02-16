@@ -54,18 +54,16 @@ void choleskyblk(double *A, int n, int bs, int *info)
  * routine */
 void dpotrf_quark_task( Quark *quark )
 {
-	printf("dpotrf_quark_task\n");
-	
+  //printf("dpotrf_quark_task\n");
+  
     double *A;
     int bs, lda;
-    int * info;
+    int info;
     
-	//printf("Unpack\n");
+  //printf("Unpack\n");
     quark_unpack_args_4( quark, bs, A, lda, info);
     
-	//printf("dpotrf\n");
-    dpotrf_("L", &bs, A, &lda, info, 1);
-	//printf("POST dpotrf\n");
+    dpotrf_("L", &bs, A, &lda, &info, 1);
 }
 
 
@@ -73,95 +71,106 @@ void dpotrf_quark_task( Quark *quark )
  * runtime.  Later, when dependencies are statisfied, the runtime will
  * execute this task.  The arguments to dpotrf_ are specified and
  * passed to QUARK here. */
-void dpotrf_quark_call( Quark *quark, int bs, double *A, int lda, int * info)
+void dpotrf_quark_call( Quark *quark, int bs, double *A, int lda, int info)
 {
-	//printf("=> dpotrf_quark_call dpotrf\n");
-    QUARK_Insert_Task( quark, dpotrf_quark_task, NULL,
-	    				sizeof(int), &bs, VALUE,
-						sizeof(double)*bs*bs, A, INOUT,
-						sizeof(int), &lda, VALUE,
-						sizeof(int), info, INOUT,						
-						0 );
+
+  	Quark_Task_Flags tflags = Quark_Task_Flags_Initializer ;
+  	QUARK_Task_Flag_Set( &tflags , TASK_COLOR, "green" );
+    QUARK_Task_Flag_Set( &tflags , TASK_LABEL, "dpotrf" );
+
+  //printf("=> dpotrf_quark_call dpotrf\n");
+    QUARK_Insert_Task( quark, dpotrf_quark_task, &tflags,
+            sizeof(int), &bs, VALUE,
+            sizeof(double)*bs*bs, A, INOUT,
+            sizeof(int), &lda, VALUE,
+            sizeof(int), info, OUTPUT,           
+            0 );
 }
 
 /* ===================================================================================================================== */
 
 void dtrsm_quark_task( Quark *quark )
 {
-	printf("dtrsm_quark_task\n");
-	
     double *A1;
-	double *A2;
+  	double *A2;
     int bs, lda;
     quark_unpack_args_4( quark, bs, A1, lda, A2);    
-	const double done = 1.0;
-	
-	dtrsm_("R", "L", "T", "N", &bs, &bs, &done, A1, &lda, A2, &lda, 1, 1, 1, 1);    
+  	const double done = 1.0;
+  
+  	dtrsm_("R", "L", "T", "N", &bs, &bs, &done, A1, &lda, A2, &lda, 1, 1, 1, 1);    
 
 }
 
 void dtrsm_quark_call( Quark *quark, int bs, double *A1, int lda, double *A2)
 {
-    QUARK_Insert_Task( quark, dtrsm_quark_task, NULL,
-	    				sizeof(int), &bs, VALUE,
-						sizeof(double)*bs*bs, A1, INOUT,
-						sizeof(int), &lda, VALUE,
-						sizeof(double)*bs*bs, A2, INOUT,						
-						0 );
+	Quark_Task_Flags tflags = Quark_Task_Flags_Initializer ;
+	QUARK_Task_Flag_Set( &tflags , TASK_COLOR, "red" );
+	QUARK_Task_Flag_Set( &tflags , TASK_LABEL, "dtrsm" );
+
+    QUARK_Insert_Task( quark, dtrsm_quark_task, &tflags,
+            sizeof(int), &bs, VALUE,
+            sizeof(double)*bs*bs, A1, INPUT,
+            sizeof(int), &lda, VALUE,
+            sizeof(double)*bs*bs, A2, INOUT,            
+            0 );
 }
 
 /* ===================================================================================================================== */
 
 void dgemm_quark_task( Quark *quark )
 {
-	printf("dgemm_quark_task\n");
-	
     double *A1;
-	double *A2;
-	double *A3;
+  	double *A2;
+  	double *A3;
     int bs, lda;
     quark_unpack_args_5( quark, bs, A1, lda, A2, A3);    
-	const double done = 1.0, dmone = -1.0, dzero = 0.0;
-	
-	dgemm_("N", "T", &bs, &bs, &bs, &dmone, A1, &lda, A2, &lda, &done, A3, &lda, 1, 1);
-	
+  	const double done = 1.0, dmone = -1.0, dzero = 0.0;
+ 
+  	dgemm_("N", "T", &bs, &bs, &bs, &dmone, A1, &lda, A2, &lda, &done, A3, &lda, 1, 1);
+  
 }
 
 void dgemm_quark_call( Quark *quark, int bs, double *A1, int lda, double *A2, double *A3)
 {
-    QUARK_Insert_Task( quark, dgemm_quark_task, NULL,
-	    				sizeof(int), &bs, VALUE,
-						sizeof(double)*bs*bs, A1, INOUT,
-						sizeof(int), &lda, VALUE,
-						sizeof(double)*bs*bs, A2, INOUT,
-						sizeof(double)*bs*bs, A3, INOUT,
-						0 );
+    Quark_Task_Flags tflags = Quark_Task_Flags_Initializer ;
+	QUARK_Task_Flag_Set( &tflags , TASK_COLOR, "skyblue" );
+	QUARK_Task_Flag_Set( &tflags , TASK_LABEL, "dgemm" );
+
+    QUARK_Insert_Task( quark, dgemm_quark_task, &tflags,
+            sizeof(int), &bs, VALUE,
+            sizeof(double)*bs*bs, A1, INPUT,
+            sizeof(int), &lda, VALUE,
+            sizeof(double)*bs*bs, A2, INPUT,
+            sizeof(double)*bs*bs, A3, INOUT,
+            0 );
 }
 
 /* ===================================================================================================================== */
 
 void dsyrk_quark_task( Quark *quark )
 {
-	printf("dgemm_quark_task\n");
-	
     double *A1;
-	double *A2;
+    double *A2;
     int bs, lda;
     quark_unpack_args_4( quark, bs, A1, lda, A2);    
-	const double done = 1.0, dmone = -1.0, dzero = 0.0;
-	
-	dsyrk_("L", "N", &bs, &bs, &dmone, A1, &lda, &done, A2, &lda);
-	
+  	const double done = 1.0, dmone = -1.0, dzero = 0.0;
+
+ 	dsyrk_("L", "N", &bs, &bs, &dmone, A1, &lda, &done, A2, &lda);
+  
 }
 
 void dsyrk_quark_call( Quark *quark, int bs, double *A1, int lda, double *A2)
 {
-    QUARK_Insert_Task( quark, dsyrk_quark_task, NULL,
-	    				sizeof(int), &bs, VALUE,
-						sizeof(double)*bs*bs, A1, INOUT,
-						sizeof(int), &lda, VALUE,
-						sizeof(double)*bs*bs, A2, INOUT,
-						0 );
+	Quark_Task_Flags tflags = Quark_Task_Flags_Initializer ;
+    QUARK_Task_Flag_Set( &tflags , TASK_COLOR, "yellow" );
+    QUARK_Task_Flag_Set( &tflags , TASK_LABEL, "dsyrk" );
+
+    QUARK_Insert_Task( quark, dsyrk_quark_task, &tflags,
+            sizeof(int), &bs, VALUE,
+            sizeof(double)*bs*bs, A1, INPUT,
+            sizeof(int), &lda, VALUE,
+            sizeof(double)*bs*bs, A2, INOUT,
+            0 );
 }
 
 
@@ -170,44 +179,49 @@ void dsyrk_quark_call( Quark *quark, int bs, double *A1, int lda, double *A2)
 /* 
  * Cholesky por bloques, almacenamiento tile
  */
-void choleskytile(double *A, int n, int bs, int *info, Quark *quark)
+void choleskytile(double *A, int n, int bs, int *info_v, Quark *quark)
 {
   int i, j, k, nb=n/bs, lda=bs, bs2=bs*bs;
   const double done = 1.0, dmone = -1.0, dzero = 0.0;
 
   for (k=0; k<nb; k++) {
-	
-	dpotrf_quark_call(quark, bs,A+(k+k*nb)*bs2,lda,info);
+  
+    dpotrf_quark_call(quark, bs,A+(k+k*nb)*bs2,lda, info_v[k]);
     //dpotrf_("L", &bs, A+(k+k*nb)*bs2, &lda, info, 1);
-	
-	//QUARK_Barrier( quark );
+  
+    //QUARK_Barrier( quark );
     
-    if (*info != 0) return;
+    //if (*info != 0) return;
     
     for (j=k+1; j<nb; j++){
-		dtrsm_quark_call(quark, bs, A+(k+k*nb)*bs2, lda, A+(j+k*nb)*bs2);
+    dtrsm_quark_call(quark, bs, A+(k+k*nb)*bs2, lda, A+(j+k*nb)*bs2);
 
-		//dtrsm_("R", "L", "T", "N", &bs, &bs, &done, A+(k+k*nb)*bs2, &lda, A+(j+k*nb)*bs2, &lda, 1, 1, 1, 1);    
+    //dtrsm_("R", "L", "T", "N", &bs, &bs, &done, A+(k+k*nb)*bs2, &lda, A+(j+k*nb)*bs2, &lda, 1, 1, 1, 1);    
     }
     
-	//QUARK_Barrier( quark );
+  //QUARK_Barrier( quark );
 
     
     for (j=k+1; j<nb; j++) {
-		for (i=j+1; i<nb; i++){  
-		  dgemm_quark_call( quark, bs, A+(i+k*nb)*bs2, lda, A+(j+k*nb)*bs2, A+(i+j*nb)*bs2);
-		
-		  //dgemm_("N", "T", &bs, &bs, &bs, &dmone, A+(i+k*nb)*bs2, &lda, A+(j+k*nb)*bs2, &lda, &done, A+(i+j*nb)*bs2, &lda, 1, 1);    
-		
-		  //QUARK_Barrier( quark );
-		}
-		
-		dsyrk_quark_call( quark, bs, A+(j+k*nb)*bs2, lda, A+(j+j*nb)*bs2);
-		
-		//dsyrk_("L", "N", &bs, &bs, &dmone, A+(j+k*nb)*bs2, &lda, &done, A+(j+j*nb)*bs2, &lda);
-		//QUARK_Barrier( quark );
+    for (i=j+1; i<nb; i++){  
+      dgemm_quark_call( quark, bs, A+(i+k*nb)*bs2, lda, A+(j+k*nb)*bs2, A+(i+j*nb)*bs2);
+    
+      //dgemm_("N", "T", &bs, &bs, &bs, &dmone, A+(i+k*nb)*bs2, &lda, A+(j+k*nb)*bs2, &lda, &done, A+(i+j*nb)*bs2, &lda, 1, 1);    
+    
+      //QUARK_Barrier( quark );
     }
+    
+    dsyrk_quark_call( quark, bs, A+(j+k*nb)*bs2, lda, A+(j+j*nb)*bs2);
+    
+    //dsyrk_("L", "N", &bs, &bs, &dmone, A+(j+k*nb)*bs2, &lda, &done, A+(j+j*nb)*bs2, &lda);
+    //QUARK_Barrier( quark );
+    }
+    
+    
+    
   }
+  QUARK_Barrier( quark );
+
 }
 
 int main(int argc, char **argv)
@@ -216,6 +230,8 @@ int main(int argc, char **argv)
   double *A, *B, *x, *b, err;
   const double done = 1.0, dzero = 0.0;
   const int one = 1;
+  int* info_v = (int*)malloc((n/bs)*sizeof(int));
+
   
   struct timeval t0, t1;
   double time;
@@ -235,7 +251,7 @@ int main(int argc, char **argv)
     if ((nthreads = atoi(argv[3])) < 0) nthreads = 640;
   }
   if (argc >= 5) ft = atoi(argv[4]);  /* ft=0 tile, ft=1 fortran */ 
-  printf("Cholesky de matriz de orden %d, tamaño de bloque=%d %s\n",n,bs,ft?"FORTRAN":"TILE");
+  //printf("Cholesky de matriz de orden %d, tamaño de bloque=%d %s\n",n,bs,ft?"FORTRAN":"TILE");
   
 
   /* Creación de las matrices */
@@ -247,6 +263,7 @@ int main(int argc, char **argv)
   //Quark start threads
   Quark *quark = QUARK_New(nthreads);
 
+ QUARK_DOT_DAG_Enable (quark, 1);
 
   /* Inicializar matriz aleatoria */
   for(i=0; i<n; i++) {
@@ -267,13 +284,15 @@ int main(int argc, char **argv)
   else {
     convtile(A, B, n, bs, 0);
 
-	//get time
-	gettimeofday (&t0, NULL);
+  //get time
+  gettimeofday (&t0, NULL);
+  
+  // pasar vector_info en lugar de info
 
-    choleskytile(B, n, bs, &info, quark);
-	
-	//get time
-	gettimeofday (&t1, NULL);
+  choleskytile(B, n, bs, info_v, quark);
+  
+  //get time
+  gettimeofday (&t1, NULL);
     
     convtile(B, A, n, bs, 1);
   }
@@ -281,10 +300,16 @@ int main(int argc, char **argv)
   //Quark eliminate threads
   QUARK_Delete(quark);
 
-  if (info != 0) {
+  int k;
+  info = 0;
+  for(k=0; k<n/bs; k++) {
+  	info = info+info_v[k];
+  }
+
+  /*if (info != 0) {
     printf("ERROR: falló la factorización de Cholesky\n");
     exit(1);
-  }
+  }*/
 
   /* Comprobar solución */
   dpotrs_("L", &n, &one, A, &n, b, &n, &info, 1);
@@ -292,16 +317,15 @@ int main(int argc, char **argv)
     printf("ERROR: falló la resolución triangular\n");
     exit(1);
   }
-  err = 0.0;
-  for (i=0; i<n; i++) err += fabs(1.0-b[i]);
-  printf("Error=%g\n",err);
 
   time = (t1.tv_sec-t0.tv_sec)+(t1.tv_usec-t0.tv_usec)/1000000.0;
 
-  printf("%d;%d;%d;%f\n",n,bs,nthreads,time);
+  printf("%d;%d;%d;%f;",n,bs,nthreads,time);
 
+  err = 0.0;
+  for (i=0; i<n; i++) err += fabs(1.0-b[i]);
+  printf("%g\n",err);
 
   free(A); free(B); free(x); free(b);
   return 0;
 }
-

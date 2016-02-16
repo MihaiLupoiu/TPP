@@ -5,6 +5,6 @@ LIBS     = -lm -llapack -lblas /labos/alumnos/milu/TPP/OpenMP/chol/quark-0.9.0/l
 chol: chol.o
 	$(CC) -o $@ chol.o $(LDFLAGS) $(LIBS)
 
-origianl: chol_origianl.o
+original: chol_origianl.o
 	$(CC) -o $@ chol_origianl.o $(LDFLAGS) $(LIBS)
 

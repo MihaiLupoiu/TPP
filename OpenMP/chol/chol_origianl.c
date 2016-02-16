@@ -68,7 +68,7 @@ void choleskytile(double *A, int n, int bs, int *info)
 
 int main(int argc, char **argv)
 {
-  int i, j, n=640, bs=64, ft=0, info, nthreads=2;
+  int i, j, n=640, bs=64, ft=0, info;
   double *A, *B, *x, *b, err;
   const double done = 1.0, dzero = 0.0;
   const int one = 1;
@@ -88,11 +88,8 @@ int main(int argc, char **argv)
     printf("ERROR: el tamaño de la matriz ha de ser divisible por bs\n");
     exit(1);
   }
-  if (argc >= 4) {
-    if ((nthreads = atoi(argv[3])) < 0) nthreads = 640;
-  }
-  if (argc >= 5) ft = atoi(argv[4]);  /* ft=0 tile, ft=1 fortran */ 
-  printf("Cholesky de matriz de orden %d, tamaño de bloque=%d %s\n",n,bs,ft?"FORTRAN":"TILE");
+  if (argc >= 4) ft = atoi(argv[3]);  /* ft=0 tile, ft=1 fortran */ 
+  //printf("Cholesky de matriz de orden %d, tamaño de bloque=%d %s\n",n,bs,ft?"FORTRAN":"TILE");
   
 
   /* Creación de las matrices */
@@ -123,7 +120,7 @@ int main(int argc, char **argv)
 	//get time
 	gettimeofday (&t0, NULL);
 
-    choleskytile(B, n, bs, &info);
+  choleskytile(B, n, bs, &info);
 	
 	//get time
 	gettimeofday (&t1, NULL);
@@ -143,13 +140,15 @@ int main(int argc, char **argv)
     printf("ERROR: falló la resolución triangular\n");
     exit(1);
   }
-  err = 0.0;
-  for (i=0; i<n; i++) err += fabs(1.0-b[i]);
-  printf("Error=%g\n",err);
-
+  
   time = (t1.tv_sec-t0.tv_sec)+(t1.tv_usec-t0.tv_usec)/1000000.0;
 
-  printf("%d;%d;%d;%f\n",n,bs,nthreads,time);
+  printf("%d;%d;%f;",n,bs,time);
+
+  err = 0.0;
+  for (i=0; i<n; i++) err += fabs(1.0-b[i]);
+  printf("%g\n",err);
+
 
 
   free(A); free(B); free(x); free(b);

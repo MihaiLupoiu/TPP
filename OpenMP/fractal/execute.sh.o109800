@@ -1,0 +1,17 @@
+Secuencial
+OpenMP  static
+Threads  2
+Threads  3
+Threads  4
+Threads  5
+Threads  6
+Threads  7
+Threads  8
+OpenMP  dynamic
+Threads  2
+Threads  3
+Threads  4
+Threads  5
+Threads  6
+Threads  7
+Threads  8

@@ -1,0 +1,30 @@
+-- 1 threads
+Jacobi computation complete.
+Delta is 0.000996098 (< epsilon = 0.001)
+Tiempo empleado: 10.681
+# of iterations: 243
+-- 2 threads
+Jacobi computation complete.
+Delta is 0.000996098 (< epsilon = 0.001)
+Tiempo empleado: 5.45508
+# of iterations: 243
+-- 4 threads
+Jacobi computation complete.
+Delta is 0.000996098 (< epsilon = 0.001)
+Tiempo empleado: 2.70837
+# of iterations: 243
+-- 8 threads
+Jacobi computation complete.
+Delta is 0.000996098 (< epsilon = 0.001)
+Tiempo empleado: 1.96467
+# of iterations: 243
+-- 16 threads
+Jacobi computation complete.
+Delta is 0.000996098 (< epsilon = 0.001)
+Tiempo empleado: 1.7209
+# of iterations: 243
+-- 32 threads
+Jacobi computation complete.
+Delta is 0.000996098 (< epsilon = 0.001)
+Tiempo empleado: 3.65504
+# of iterations: 243

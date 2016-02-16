@@ -1,0 +1,247 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+        "http://www.w3.org/TR/html4/strict.dtd"
+>
+<!--some references:
+1. https://computing.llnl.gov/tutorials/mpi/exercise.html
+2. http://www.nccs.gov/user-support/training-education/hpcparallel-computing-links/mpi-examples/#table
+-->
+
+<html>
+<head>
+	<title>Master TPP: Examples</title>
+	<meta name="generator" content="BBEdit 8.7">
+</head>
+<body>
+	<h1> TPP examples: Master en Computacion Paralela y Distribuida</h1>
+
+<h2> 1. Fundamentals </h2>
+
+<h3><a href="first.c">first.c</a>&nbsp;</h3>
+This is a simple hello world program. Each processor prints out it's rank and the size of the current MPI run (Total number of processors).
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h2> 2. Point-to-Point communication </h2>
+
+<h3><a href="send.c">send.c</a>&nbsp;</h3>
+A simple send/receive program in MPI
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Send</li>
+	<li>MPI_Recv</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="isend.c">isend.c</a>&nbsp;</h3>
+This is a simple isend/ireceive program in MPI.
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Isend</li>
+	<li>MPI_Irecv</li>
+	<li>MPI_Wait</li>
+	<li>MPI_Finalize</li>
+</ul>
+<h3><a href="int.c">int.c</a>&nbsp;</h3>
+Numerical integration program in MPI; cos(x), x in [0,pi/2]
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_send</li>
+	<li>MPI_recv</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="send2_ex.c">send2_ex.c</a>&nbsp;</h3>
+Exercise: explore new functions; based on send.c, use probe and get_count to find the size of an incomming message. 
+<a href="send2.c">[Solution]</a>
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_SEND</li>
+	<li>MPI_Probe</li>
+	<li>MPI_get_count</li>
+	<li>MPI_recv</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h2> 3. Collective communication </h2>
+
+<h3><a href="broad.c">broad.c</a>&nbsp;</h3>
+A broadcast program in MPI.		
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Bcast</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="gather_scatter.c">gather_scatter.c</a>&nbsp;</h3>
+This program shows how to use MPI_Scatter and MPI_Gather. Each processor gets different data from the root processor by way of mpi_scatter. The data is summed and then sent back
+to the root processor using MPI_Gather. The root processor then prints the global sum. 
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Scatter</li>
+	<li>MPI_Gather</li>
+	<li>MPI_Finalize</li>
+</ul>
+<h3><a href="reduce.c">reduce.c</a>&nbsp;</h3>
+This program shows how to use MPI_Scatter and MPI_Reduce. Each processor gets different data from the root processor by way of mpi_scatter. The data is summed and then sent back
+to the root processor using MPI_Reduce. The root processor then prints the global sum. 
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Scatter</li>
+	<li>MPI_Reduce</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="alltoall.c">alltoall.c</a>&nbsp;</h3>
+This program shows how to use MPI_Alltoall. Each processor send/rec a different random number 
+to/from other processors. 
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_alltoall</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="gatherv.c">gatherv.c</a>&nbsp;</h3>
+This program shows how to use MPI_Gatherv. Each processor sends a different amount of data to the root processor. We use MPI_Gather first to tell the root how much data is going to be sent.
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Gather</li>
+	<li>MPI_Gatherv</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="int2_ex.c">int2_ex.c</a>&nbsp;</h3>
+Exercise: rewrite int.c (Numerical integration program in MPI) in order to use reduce function. 
+<a href="int2.c">[Solution]</a>
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Reduce</li>
+</ul>
+
+<h2> 4. Advanced aspects </h2>
+
+<h3><a href="derived_dt_cont.c">derived_dt_cont.c</a>&nbsp;</h3>
+A simple program illustrating derived datatype - contiguous 
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Type_contiguous</li>
+	<li>MPI_Type_commit</li>
+	<li>MPI_Send</li>
+	<li>MPI_Recv</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="derived_dt_vector.c">derived_dt_vector.c</a>&nbsp;</h3>
+A simple program illustrating derived datatype - vector
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Type_vector</li>
+	<li>MPI_Type_commit</li>
+	<li>MPI_Send</li>
+	<li>MPI_Recv</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="derived_dt_indexed.c">derived_dt_indexed.c</a>&nbsp;</h3>
+A simple program illustrating derived datatype - indexed
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Type_indexed</li>
+	<li>MPI_Type_commit</li>
+	<li>MPI_Send</li>
+	<li>MPI_Recv</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="derived_dt_structed.c">derived_dt_structed.c</a>&nbsp;</h3>
+A simple program illustrating derived datatype - structured
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Type_structed</li>
+	<li>MPI_Type_commit</li>
+	<li>MPI_Send</li>
+	<li>MPI_Recv</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="group.c">group.c</a>&nbsp;</h3>
+A simple program using groups (8 processes)
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_COMM_GROUP</li>
+	<li>MPI_GROUP_INCL</li>
+	<li>MPI_COMM_CREATE</li>
+	<li>MPI_Allreduce</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="group2.c">group2.c</a>&nbsp;</h3>
+This program is designed to show how to set up a new communicator. We set up a communicator that includes all but one of the processors. The last processor is not part of the new communcator, TIMS_COMM_WORLD. We use the routine MPI_Group_rank to find the rank within the new connunicator. For the last processor the rank is MPI_UNDEFINED because it is not part of the communicator.  For this processor we call get_input The processors in TIMS_COMM_WORLD pass a token between themselves in the subroutine pass_token. The remaining processor gets input, i, from the terminal
+and passes it to processor 1 of MPI_COMM_WORLD. If i > 100 the program stops.
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_COMM_GROUP</li>
+	<li>MPI_GROUP_INCL</li>
+	<li>MPI_COMM_CREATE</li>
+	<li>MPI_GROUP_RANK</li>
+	<li>MPI_Barrier</li>
+	<li>MPI_COMM_DUP</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Barrier</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+<h3><a href="cart.c">cart.c</a>&nbsp;</h3>
+A simple program using cartesian topology (16 processes)
+<ul>
+	<li>MPI_Init</li>
+	<li>MPI_Comm_size</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Cart_create</li>
+	<li>MPI_Comm_rank</li>
+	<li>MPI_Cart_coords</li>
+	<li>MPI_Cart_shift</li>
+	<li>MPI_Isend</li>
+	<li>MPI_Irecv</li>
+	<li>MPI_Waitall</li>
+	<li>MPI_Finalize</li>
+</ul>
+
+</body>
+</html>
